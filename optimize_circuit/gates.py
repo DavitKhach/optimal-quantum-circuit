@@ -23,9 +23,10 @@ class X(Gate):
     """
 
     def __init__(self, qubit_index, theta):
-        """Initializes an X gate with given parameter theta and qubit index"""
-        self.arr = np.array([[np.cos(theta / 2), -1j * np.sin(theta / 2)],
-                             [-1j * np.sin(theta / 2), np.cos(theta / 2)]], dtype=complex)
+        """Initializes an X gate with given parameter theta (degrees) and qubit index"""
+        th = np.deg2rad(theta) / 2
+        self.arr = np.array([[np.cos(th), -1j * np.sin(th)],
+                             [-1j * np.sin(th), np.cos(th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
@@ -43,9 +44,10 @@ class Y(Gate):
     """
 
     def __init__(self, qubit_index, theta):
-        """Initializes an Y gate with given parameter theta and qubit index"""
-        self.arr = np.array([[np.cos(theta / 2), -1j * np.sin(theta / 2)],
-                             [-1j * np.sin(theta / 2), np.cos(theta / 2)]], dtype=complex)
+        """Initializes an Y gate with given parameter theta (degrees) and qubit index"""
+        th = np.deg2rad(theta) / 2
+        self.arr = np.array([[np.cos(th), -1j * np.sin(th)],
+                             [-1j * np.sin(th), np.cos(th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
@@ -62,9 +64,10 @@ class Z(Gate):
     """
 
     def __init__(self, qubit_index, theta):
-        """Initializes an Z gate with given parameter theta and qubit index"""
-        self.arr = np.array([[np.exp(-1j * theta/2), 0],
-                             [0, np.exp(1j * theta/2)]], dtype=complex)
+        """Initializes an Z gate with given parameter theta (degrees) and qubit index"""
+        th = np.deg2rad(theta) / 2
+        self.arr = np.array([[np.exp(-1j * th), 0],
+                             [0, np.exp(1j * th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
@@ -120,10 +123,18 @@ class OneQubitUnitary(Gate):
     """
 
     def __init__(self, index, theta, phi, lam):
-        """Initializes a one qubit unitary gate"""
+        """Initializes a one qubit unitary gate
 
-        self.arr = np.array([[np.cos(theta/2), -np.exp(1j * lam) * np.sin(theta/2)],
-                             [np.exp(1j * phi) * np.sin(theta/2), np.exp(1j * (phi + lam)) * np.cos(theta/2)]]
+        :param index: index of the qubit
+        :param theta: parameter in angles
+        :param phi: parameter in angles
+        :param lam: parameter in angles
+        """
+        th_rad = np.deg2rad(theta) / 2
+        phi_rad = np.deg2rad(phi)
+        lam_rad = np.deg2rad(lam)
+        self.arr = np.array([[np.cos(th_rad), -np.exp(1j * lam_rad) * np.sin(th_rad)],
+                             [np.exp(1j * phi_rad) * np.sin(th_rad), np.exp(1j * (phi_rad + lam_rad)) * np.cos(th_rad)]]
                             , dtype=complex)
         self.theta = theta
         self.phi = phi
@@ -133,26 +144,10 @@ class OneQubitUnitary(Gate):
     def to_sting_notation(self):
         return f"UOne({self.index}, {self.theta}, {self.phi}, {self.lam})"
 
-    def to_xyx_gates(self):
-        pass
-
-    def to_xzx_gates(self):
-        pass
-
-    def to_yxy_gates(self):
-        pass
-
-    def to_yzy_gates(self):
-        pass
-
-    def to_zxz_gates(self):
-        pass
-
-    def to_zyz_gates(self):
-        pass
-
 
 class TwoQubitUnitary(Gate):
     """A two qubit unitary gate
-
+    Minimal Universal Two-qubit Quantum Circuits
+    from "arXiv preprint quant-ph/0308033"
     """
+    pass
