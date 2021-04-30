@@ -1,4 +1,5 @@
 from gates import *
+from hardware import QuantumHardware
 
 
 class QuantumCircuit:
@@ -8,80 +9,16 @@ class QuantumCircuit:
     where p_1, p_2 and p_3 are parameters, and one two qubit gate: CNOT.
     """
 
-    def __init__(self, qubit_number):
+    def __init__(self, hardware: QuantumHardware):
         """Initializes a quantum circuit. If qubit_number > 2 raises
-        not implemented error. In the initialization the default values for
-        gate length are defined that can be changed with corresponding setter.
+        not implemented error.
 
-        :param qubit_number: 1 or 2
+        :param hardware: QuantumHardware
         """
 
-        self.qubit_number = qubit_number
-        self.length_x = 10  # ns
-        self.length_y = 10  # ns
-        self.length_z = 10  # ns
-        self.length_cnot = 100  # ns
-        self.hardware_basis_gates = {"X", "Y", "Z", "CNOT"}
+        self.qubit_number = hardware.qubit_number
+        self.qubit_indexes = hardware.qubit_indexes
         self.gates = []
-
-    @property
-    def length_x(self):
-        """The length of the X gate in ns"""
-        return self._length_x
-
-    @property
-    def length_y(self):
-        """The length of the Y gate in ns"""
-        return self._length_x
-
-    @property
-    def length_z(self):
-        """The length of the Z gate in ns"""
-        return self._length_x
-
-    @property
-    def hardware_basis_gates(self):
-        """The basis gates of the Hardware"""
-        return self._hardware_basis_gates
-
-    @length_x.setter
-    def length_x(self, length):
-        """Changes the length of the X gate"""
-        if not isinstance(length, int):
-            raise TypeError("The length of a gate must be an integer")
-        if length <= 0:
-            raise ValueError("the length of a gate can not be negative")
-        self._length_x = length
-
-    @length_y.setter
-    def length_y(self, length):
-        """Changes the length of the Y gate"""
-        if not isinstance(length, int):
-            raise TypeError("The length of a gate must be an integer")
-        if length <= 0:
-            raise ValueError("the length of a gate can not be negative")
-        self._length_y = length
-
-    @length_z.setter
-    def length_z(self, length):
-        """Changes the length of the Z gate"""
-        if not isinstance(length, int):
-            raise TypeError("The length of a gate must be an integer")
-        if length <= 0:
-            raise ValueError("the length of a gate can not be negative")
-        self._length_z = length
-
-    @hardware_basis_gates.setter
-    def hardware_basis_gates(self, basis_gates):
-        """Changes the set of the basis gates"""
-        if not (basis_gates == {'X', 'Y', 'Z', 'CNOT'} or
-                basis_gates == {'X', 'Y', 'CNOT'} or
-                basis_gates == {'X', 'Z', 'CNOT'} or
-                basis_gates == {'Y', 'Z', 'CNOT'}):
-            raise ValueError("The basis gates should be either {'X', 'Y', 'Z', 'CNOT'}"
-                             "or 'X', 'Y', 'CNOT'} or {'X', 'Z', 'CNOT'} "
-                             "or {'Y', 'Z', 'CNOT'}. It was given: ", basis_gates)
-        self._hardware_basis_gates = basis_gates
 
     def add(self, gate: Gate):
         """Adds a gate represented by an instance of Gate class
@@ -100,10 +37,17 @@ class QuantumCircuit:
             if gate_str[0:2] == "CX":
                 index_1 = int(gate_str[3])
                 index_2 = int(gate_str[-1])
+                if (index_1 not in self.qubit_indexes) or \
+                        (index_1 not in self.qubit_indexes):
+                    raise ValueError(f"The qubits with given indexes = ({index_1}, {index_2}) "
+                                     f"are (is) not defined for the given QuantumHardware")
                 self.add(CX(index_1, index_2))
             else:
                 index = gate_str[2]
-                theta = float(gate_str.split()[-1])
+                if index not in self.qubit_indexes:
+                    raise ValueError(f"The qubit with given index = {index} "
+                                     f"is not defined for the given QuantumHardware")
+                theta = np.deg2rad(float(gate_str.split()[-1]))
                 if gate_str[0] == "X":
                     self.add(X(index, theta))
                 elif gate_str[0] == "Y":
