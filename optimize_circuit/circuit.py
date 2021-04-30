@@ -1,5 +1,6 @@
 from gates import *
-from hardware import HardwareConfiguration
+from optimize_gates import optimize_one_qubit_circuit
+from hardware.hardware_configuration import HardwareConfiguration
 
 
 class QuantumCircuit:
@@ -54,6 +55,11 @@ class QuantumCircuit:
                                      "'{Gate}({qubit}, {Angle}), CX({qubitA}, {qubitB}), "
                                      "{Gate}({qubit}, {Angle}) ...' with exact spacing."
                                      f". The given string = {gates_in_string}")
+
+    def optimize(self):
+        """Optimizes the circuit"""
+        if self.hardware.qubit_number == 1:
+            self.gates = optimize_one_qubit_circuit(self.gates, self.hardware)
 
     def get_cx_number(self):
         """Calculates the number of CX gates on the fly"""
