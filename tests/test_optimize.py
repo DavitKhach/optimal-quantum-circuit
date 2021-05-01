@@ -1,6 +1,6 @@
-import pytest
 from optimize_circuit.circuit import QuantumCircuit
-from optimize_circuit.hardware.hardware_configuration import HardwareConfiguration
+from optimize_circuit.hardware.hardware_configuration \
+    import HardwareConfiguration
 
 xyz_hardware = HardwareConfiguration(1, basis_gates={'X', 'Y', 'Z', 'CX'})
 xz_hardware = HardwareConfiguration(1, basis_gates={'X', 'Z', 'CX'})
