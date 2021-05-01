@@ -1,4 +1,5 @@
-from gates import *
+import numpy as np
+from gates import X, Y, Z, CX, Gate
 from optimize_gates import optimize_one_qubit_circuit
 from hardware.hardware_configuration import HardwareConfiguration
 
@@ -51,10 +52,12 @@ class QuantumCircuit:
                 elif gate_str[0] == "Z":
                     self.add(X(index, theta))
                 else:
-                    raise ValueError("The given string must be in the following form "
-                                     "'{Gate}({qubit}, {Angle}), CX({qubitA}, {qubitB}), "
-                                     "{Gate}({qubit}, {Angle}) ...' with exact spacing."
-                                     f". The given string = {gates_in_string}")
+                    raise ValueError(
+                        "The given string must be in the "
+                        "following form '{Gate}({qubit}, {Angle}), "
+                        "CX({qubitA}, {qubitB}), ...' "
+                        "with exact spacing. The given string = "
+                        f"{gates_in_string}")
 
     def optimize(self):
         """Optimizes the circuit"""
@@ -78,7 +81,9 @@ class QuantumCircuit:
         return sum([1 for gate in self.gates if isinstance(gate, Z)] + [0])
 
     def __str__(self):
-        """Uses string representation of the circuit: e.g. 'X(1, 90), Z(1, 180), CX(0,1)'"""
+        """Uses string representation of the circuit:
+            e.g. 'X(1, 90), Z(1, 180), CX(0,1)'
+        """
         return ", ".join([gate.to_sting_notation() for gate in self.gates])
 
     def __len__(self):

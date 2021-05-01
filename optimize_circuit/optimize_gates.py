@@ -1,10 +1,9 @@
-from circuit import *
-from hardware.hardware_configuration import *
-from transformations import *
+from transformations import u_to_zxz_gates, u_to_zyz_gates
+from gates import OneQubitUnitary
 import numpy as np
 
 
-def optimize_one_qubit_circuit(gate_list: list, hardware: HardwareConfiguration):
+def optimize_one_qubit_circuit(gate_list, hardware):
     """Optimizes one qubit gate_list
 
     :param hardware: HardwareConfiguration
@@ -29,12 +28,13 @@ def optimize_one_qubit_circuit(gate_list: list, hardware: HardwareConfiguration)
     phi_rad = np.angle(resulting_unitary[1, 0])
     lam_rad = np.angle(-resulting_unitary[0, 1])
 
-    u_one_qubit_gate = OneQubitUnitary(index, np.rad2deg(theta_rad), np.rad2deg(phi_rad), np.rad2deg(lam_rad))
+    u_one_qubit_gate = OneQubitUnitary(
+        index, np.rad2deg(theta_rad), np.rad2deg(phi_rad), np.rad2deg(lam_rad))
 
     return u_to_optimal_three_gates(u_one_qubit_gate, hardware)
 
 
-def u_to_optimal_three_gates(u_one_gate: OneQubitUnitary, hardware: HardwareConfiguration):
+def u_to_optimal_three_gates(u_one_gate, hardware):
     """ Finds the optimal gate sequence
 
     :param u_one_gate: OneQubitUnitary
@@ -49,7 +49,8 @@ def u_to_optimal_three_gates(u_one_gate: OneQubitUnitary, hardware: HardwareConf
     if "Y" not in hardware.basis_gates:
         return gates_zxz
 
-    if hardware.duration_of_one_qubit_gates(gates_zxz) < hardware.duration_of_one_qubit_gates(gates_zxz):
+    if hardware.duration_of_one_qubit_gates(gates_zxz) < \
+            hardware.duration_of_one_qubit_gates(gates_zxz):
         return gates_zxz
     else:
         return gates_zyz

@@ -1,11 +1,10 @@
-from optimize_circuit.gates import *
+from optimize_circuit.gates import X, Y, Z, CX
 
-DEFAULT_BASIS_GATES = frozenset({'X', 'Y', 'Z', 'CNOT'})
+DEFAULT_BASIS_GATES = frozenset({'X', 'Y', 'Z', 'CX'})
 ACCEPTABLE_BASIS_GATES_LIST = {
     DEFAULT_BASIS_GATES,
-    frozenset({'X', 'Y', 'CNOT'}),
-    frozenset({'X', 'Z', 'CNOT'}),
-    frozenset({'Y', 'Z', 'CNOT'})
+    frozenset({'X', 'Z', 'CX'}),
+    frozenset({'Y', 'Z', 'CX'})
 }
 
 
@@ -15,7 +14,8 @@ class HardwareConfiguration:
         """Initializes a quantum hardware configuration with basis gates"""
 
         if basis_gates not in ACCEPTABLE_BASIS_GATES_LIST:
-            raise ValueError(f"The {basis_gates} are not one of the acceptable basis gates: "
+            raise ValueError(f"The {basis_gates} are not one of "
+                             f"the acceptable basis gates: "
                              f" {ACCEPTABLE_BASIS_GATES_LIST}")
         self._basis_gates = basis_gates
         self._qubit_number = qubit_number
@@ -30,7 +30,8 @@ class HardwareConfiguration:
 
         :param qubit_index: int
         """
-        if (not isinstance(qubit_index, int)) or qubit_index >= self.qubit_number or qubit_index < 0:
+        if (not isinstance(qubit_index, int)) or \
+                qubit_index >= self.qubit_number or qubit_index < 0:
             raise ValueError(f"'{qubit_index}' is not valid qubit index")
 
     def duration_of_one_qubit_gates(self, gate_list):
@@ -49,7 +50,8 @@ class HardwareConfiguration:
             elif isinstance(gate, Z):
                 duration += self.length_z
             elif isinstance(gate, CX):
-                raise ValueError("CX gate cannot be presented in the list of the single qubit gates")
+                raise ValueError("CX gate cannot be presented in "
+                                 "the list of the single qubit gates")
 
         return duration
 
@@ -114,5 +116,3 @@ class HardwareConfiguration:
     def length_cx(self, value):
         """Changes the length of the CX gate"""
         self._length_cx = value
-
-

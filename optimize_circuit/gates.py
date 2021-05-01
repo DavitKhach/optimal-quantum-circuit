@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import cos, sin, exp
 from abc import ABC, abstractmethod
 
 
@@ -23,10 +24,12 @@ class X(Gate):
     """
 
     def __init__(self, qubit_index, theta):
-        """Initializes an X gate with given parameter theta (degrees) and qubit index"""
+        """Initializes an X gate with given
+        parameter theta (degrees) and qubit index
+        """
         th = np.deg2rad(theta) / 2
-        self.arr = np.array([[np.cos(th), -1j * np.sin(th)],
-                             [-1j * np.sin(th), np.cos(th)]], dtype=complex)
+        self.arr = np.array([[cos(th), -1j * sin(th)],
+                             [-1j * sin(th), cos(th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
@@ -44,10 +47,12 @@ class Y(Gate):
     """
 
     def __init__(self, qubit_index, theta):
-        """Initializes an Y gate with given parameter theta (degrees) and qubit index"""
+        """Initializes an Y gate with given parameter
+        theta (degrees) and qubit index
+        """
         th = np.deg2rad(theta) / 2
-        self.arr = np.array([[np.cos(th), -1j * np.sin(th)],
-                             [-1j * np.sin(th), np.cos(th)]], dtype=complex)
+        self.arr = np.array([[cos(th), -1j * sin(th)],
+                             [-1j * sin(th), cos(th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
@@ -64,10 +69,12 @@ class Z(Gate):
     """
 
     def __init__(self, qubit_index, theta):
-        """Initializes an Z gate with given parameter theta (degrees) and qubit index"""
+        """Initializes an Z gate with given parameter
+        theta (degrees) and qubit index
+        """
         th = np.deg2rad(theta) / 2
-        self.arr = np.array([[np.exp(-1j * th), 0],
-                             [0, np.exp(1j * th)]], dtype=complex)
+        self.arr = np.array([[exp(-1j * th), 0],
+                             [0, exp(1j * th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
@@ -104,9 +111,10 @@ class CX(Gate):
                                  [0, 0, 0, 1],
                                  [0, 0, 1, 0]], dtype=complex)
         else:
-            raise NotImplemented("The index_1 and index_2 for CX gate must be given either 0 or 1"
-                                 f"and not equal to each other. It was given: index_1 = {index_1} "
-                                 f"and index_2 = {index_2}")
+            raise NotImplementedError(
+                "The index_1 and index_2 for CX gate must be given either "
+                "0 or 1 and not equal to each other. It was given: "
+                f"index_1 = {index_1} and index_2 = {index_2}")
 
         self.index_1 = index_1
         self.index_2 = index_2
@@ -118,8 +126,9 @@ class CX(Gate):
 class OneQubitUnitary(Gate):
     """A one qubit unitary gate
 
-    UOne = [[cos(theta/2), -exp(1j * lam) * sin(theta/2)],
-            [exp(1j * phi) * sin(theta/2), exp(1j * (phi + lam)) * cos(theta/2)]]
+    UOne =
+    [[cos(theta/2), -exp(1j * lam) * sin(theta/2)],
+    [exp(1j * phi) * sin(theta/2), exp(1j * (phi + lam)) * cos(theta/2)]]
     """
 
     def __init__(self, index, theta, phi, lam):
@@ -130,12 +139,13 @@ class OneQubitUnitary(Gate):
         :param phi: parameter in angles
         :param lam: parameter in angles
         """
-        th_rad = np.deg2rad(theta) / 2
-        phi_rad = np.deg2rad(phi)
-        lam_rad = np.deg2rad(lam)
-        self.arr = np.array([[np.cos(th_rad), -np.exp(1j * lam_rad) * np.sin(th_rad)],
-                             [np.exp(1j * phi_rad) * np.sin(th_rad), np.exp(1j * (phi_rad + lam_rad)) * np.cos(th_rad)]]
-                            , dtype=complex)
+        th = np.deg2rad(theta) / 2
+        ph = np.deg2rad(phi)
+        lm = np.deg2rad(lam)
+        self.arr = np.array(
+            [[cos(th), -exp(1j * lm) * sin(th)],
+             [exp(1j * ph) * sin(th), exp(1j * (ph + lm)) * cos(th)]],
+            dtype=complex)
         self.theta = theta
         self.phi = phi
         self.lam = lam
