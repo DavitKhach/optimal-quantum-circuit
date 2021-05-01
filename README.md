@@ -1,11 +1,14 @@
 # Optimal quantum circuit
 
-An open-source package for optimizing circuits. 
-Currently, the implementation is limited to the one qubit circuit case.
+An open-source project for optimizing circuits. 
+Currently, the implementation is limited to the one-qubit circuit case.
 
-In order to use the package firstly download the package from GitHub.
-For further configurations we recommend to install [Anaconda](https://www.anaconda.com/products/individual)
-and create a separate `conda` environment for the package:
+## How to run
+
+
+In order to use the project firstly clone the repository from GitHub.
+For further configurations we recommend installing [Anaconda](https://www.anaconda.com/products/individual)
+and creating a separate `conda` environment for the project:
 
 ```bash
 conda create -n ENV_NAME python=3
@@ -29,7 +32,9 @@ For development/contribution proposes one can use `pytests` to check the test co
 pytest --cov optimize_circuit
 ```
 
-Example of a code:
+## Usage and explanation of the running process
+
+Example of circuit usage:
 
 ```bash
 hardware = HardwareConfiguration(1, basis_gates={'X', 'Y', 'Z', 'CX'})
@@ -41,7 +46,8 @@ print(circuit)
 
 The output of the circuit will be either `"Z(0, angle_1), X(0, angle_2), Z(0, angle_3)"` or
 `"Z(0, angle_1), Y(0, angle_2), Z(0, angle_3)"` depending on which sequence of universal gate 
-sequence (`ZYZ` or `ZXZ`) will be smaller by duration. By using the default durations for the 
+sequence (`ZYZ` or `ZXZ`: for more info please have a look at [gate_identities](./docs/gate_identities.ipynb)
+with Jupyter Notebook) will be smaller by duration. By using the default durations for the 
 gates the output will be:
 
 ```bash
