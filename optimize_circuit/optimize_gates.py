@@ -88,7 +88,7 @@ def optimize_three_gate(gate_list):
         gate_list = gate_list[0:1] + optimized_last_two_gates
         return optimize_two_gate(gate_list)
 
-    return optimize_with_three_gates_identities(gate_list)
+    return optimize_with_three_gate_identities(gate_list)
 
 
 def optimize_two_gate(gate_list):
@@ -119,7 +119,7 @@ def optimize_two_gate(gate_list):
     return gate_list
 
 
-def optimize_with_three_gates_identities(gate_list):
+def optimize_with_three_gate_identities(gate_list):
     """Optimize with three gates identities
 
     :param gate_list: list of gates

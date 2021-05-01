@@ -1,7 +1,7 @@
 from optimize_circuit.gates import X, Y, Z, CX, Gate
 from optimize_circuit.optimize_gates import \
     optimize_one_qubit_circuit, micro_optimize_one_qubit_circuit
-from optimize_circuit.hardware.hardware_configuration import \
+from optimize_circuit.hardware_configuration import \
     HardwareConfiguration
 
 

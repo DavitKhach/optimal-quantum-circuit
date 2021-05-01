@@ -1,5 +1,5 @@
 from optimize_circuit.circuit import QuantumCircuit
-from optimize_circuit.hardware.hardware_configuration \
+from optimize_circuit.hardware_configuration \
     import HardwareConfiguration
 
 xyz_hardware = HardwareConfiguration(1, basis_gates={'X', 'Y', 'Z', 'CX'})
@@ -7,7 +7,7 @@ xz_hardware = HardwareConfiguration(1, basis_gates={'X', 'Z', 'CX'})
 yz_hardware = HardwareConfiguration(1, basis_gates={'Y', 'Z', 'CX'})
 
 
-def test_parsing():
+def test_parser():
     circuit1 = QuantumCircuit(xyz_hardware)
 
     gates_string = "X(0, 180.0), Y(0, 67.0), X(0, 5.0), Y(0, 55.0)"
