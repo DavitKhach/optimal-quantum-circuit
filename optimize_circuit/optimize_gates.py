@@ -1,5 +1,5 @@
-from transformations import u_to_zxz_gates, u_to_zyz_gates
-from gates import OneQubitUnitary
+from optimize_circuit.transformations import u_to_zxz_gates, u_to_zyz_gates
+from optimize_circuit.gates import OneQubitUnitary
 import numpy as np
 
 

@@ -1,7 +1,7 @@
 import numpy as np
-from gates import X, Y, Z, CX, Gate
-from optimize_gates import optimize_one_qubit_circuit
-from hardware.hardware_configuration import HardwareConfiguration
+from optimize_circuit.gates import X, Y, Z, CX, Gate
+from optimize_circuit.optimize_gates import optimize_one_qubit_circuit
+from optimize_circuit.hardware.hardware_configuration import HardwareConfiguration
 
 
 class QuantumCircuit:
@@ -34,7 +34,10 @@ class QuantumCircuit:
         :param gates_in_string: str, e.g. "X(1, 90), Z(1, 180), CX(0,1)"
         """
 
-        for gate_str in gates_in_string.split("), "):
+        gate_string_list = gates_in_string.split("), ")
+        gate_string_list[-1] = gate_string_list[-1].replace(")", "")
+
+        for gate_str in gate_string_list:
             if gate_str[0:2] == "CX":
                 index_1 = int(gate_str[3])
                 index_2 = int(gate_str[-1])
@@ -42,9 +45,9 @@ class QuantumCircuit:
                 self.hardware.validate_qubit_index(index_2)
                 self.add(CX(index_1, index_2))
             else:
-                index = gate_str[2]
+                index = int(gate_str[2])
                 self.hardware.validate_qubit_index(index)
-                theta = np.deg2rad(float(gate_str.split()[-1]))
+                theta = float(gate_str.split()[-1])
                 if gate_str[0] == "X":
                     self.add(X(index, theta))
                 elif gate_str[0] == "Y":
@@ -61,7 +64,7 @@ class QuantumCircuit:
 
     def optimize(self):
         """Optimizes the circuit"""
-        if self.hardware.qubit_number == 1:
+        if self.hardware.qubit_number == 1 and len(self.gates) > 3:
             self.gates = optimize_one_qubit_circuit(self.gates, self.hardware)
 
     def get_cx_number(self):
