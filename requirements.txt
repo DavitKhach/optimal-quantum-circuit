@@ -1,0 +1,9 @@
+numpy
+
+# tests
+pytest
+pytest-cov
+flake8
+
+# tutorials/documentation
+jupyterlab
