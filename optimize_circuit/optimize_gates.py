@@ -1,5 +1,5 @@
 from optimize_circuit.transformations import u_to_zxz_gates, u_to_zyz_gates
-from optimize_circuit.gates import OneQubitUnitary
+from optimize_circuit.gates import OneQubitUnitary, X, Y, Z
 import numpy as np
 
 
@@ -54,3 +54,103 @@ def u_to_optimal_three_gates(u_one_gate, hardware):
         return gates_zxz
     else:
         return gates_zyz
+
+
+def micro_optimize_one_qubit_circuit(gate_list):
+    """Does mini optimization on circuit with
+    less than 3 gates
+    """
+    if len(gate_list) == 1:
+        if int(gate_list[0].theta) % 360 == 0:
+            return []
+        else:
+            return gate_list
+    if len(gate_list) == 2:
+        return optimize_two_gate(gate_list)
+    if len(gate_list) == 3:
+        return optimize_three_gate(gate_list)
+
+
+def optimize_three_gate(gate_list):
+    """Optimizes three gate circuit
+
+    :param gate_list: list of gates
+    :return: optimized gate_list
+    """
+    optimized_first_two_gates = optimize_two_gate(gate_list[0:2])
+    optimized_last_two_gates = optimize_two_gate(gate_list[1:])
+
+    if len(optimized_first_two_gates) <= 1:
+        gate_list = optimized_first_two_gates + gate_list[2:]
+        return optimize_two_gate(gate_list)
+    if len(optimized_last_two_gates) <= 1:
+        gate_list = gate_list[0:1] + optimized_last_two_gates
+        return optimize_two_gate(gate_list)
+
+    return optimize_with_three_gates_identities(gate_list)
+
+
+def optimize_two_gate(gate_list):
+    """Optimizes two gate circuit
+
+    :param gate_list: list of Gates
+    :return: optimized gate_list
+    """
+    if isinstance(gate_list[0], X) and isinstance(gate_list[1], X):
+        theta = gate_list[0].theta + gate_list[1].theta
+        if int(theta) % 360 == 0:
+            return []
+        else:
+            return [X(0, theta)]
+    if isinstance(gate_list[0], Y) and isinstance(gate_list[1], Y):
+        theta = gate_list[0].theta + gate_list[1].theta
+        if int(theta) % 360 == 0:
+            return []
+        else:
+            return [Y(0, theta)]
+    if isinstance(gate_list[0], Z) and isinstance(gate_list[1], Z):
+        theta = gate_list[0].theta + gate_list[1].theta
+        if int(theta) % 360 == 0:
+            return []
+        else:
+            return [Z(0, theta)]
+
+    return gate_list
+
+
+def optimize_with_three_gates_identities(gate_list):
+    """Optimize with three gates identities
+
+    :param gate_list: list of gates
+    :return: optimized gate_list
+    """
+    # XYX = -Y, XZX = -Z when X.theta ==180
+    if isinstance(gate_list[0], X) and isinstance(gate_list[2], X) and \
+            int(gate_list[0].theta) == 180 and int(gate_list[2].theta) == 180:
+        if isinstance(gate_list[1], Y):
+            return [Y(gate_list[1].qubit_index, -gate_list[1].theta)]
+        if isinstance(gate_list[1], Z):
+            return [Z(gate_list[1].qubit_index, -gate_list[1].theta)]
+
+    # YXY = -X, YZY = -Z when Y.theta ==180
+    if isinstance(gate_list[0], Y) and isinstance(gate_list[2], Y) and \
+            int(gate_list[0].theta) == 180 and int(gate_list[2].theta) == 180:
+        if isinstance(gate_list[1], X):
+            return [X(gate_list[1].qubit_index, -gate_list[1].theta)]
+        if isinstance(gate_list[1], Z):
+            return [Z(gate_list[1].qubit_index, -gate_list[1].theta)]
+
+    # ZXZ = -X, ZYZ = -Y when Z.theta ==180
+    if isinstance(gate_list[0], Z) and isinstance(gate_list[2], Z) and \
+            int(gate_list[0].theta) == 180 and int(gate_list[2].theta) == 180:
+        if isinstance(gate_list[1], X):
+            return [X(gate_list[1].qubit_index, -gate_list[1].theta)]
+        if isinstance(gate_list[1], Y):
+            return [Y(gate_list[1].qubit_index, -gate_list[1].theta)]
+
+    # Pauli(90)Pauli'(180)Pauli(90) = Pauli'(180)
+    if int(gate_list[0].theta) == 90 and int(gate_list[1].theta) == 180 \
+            and int(gate_list[2].theta) == 90:
+        return [gate_list[1]]
+
+    return gate_list

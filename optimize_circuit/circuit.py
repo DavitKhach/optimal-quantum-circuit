@@ -1,7 +1,8 @@
-import numpy as np
 from optimize_circuit.gates import X, Y, Z, CX, Gate
-from optimize_circuit.optimize_gates import optimize_one_qubit_circuit
-from optimize_circuit.hardware.hardware_configuration import HardwareConfiguration
+from optimize_circuit.optimize_gates import \
+    optimize_one_qubit_circuit, micro_optimize_one_qubit_circuit
+from optimize_circuit.hardware.hardware_configuration import \
+    HardwareConfiguration
 
 
 class QuantumCircuit:
@@ -26,7 +27,16 @@ class QuantumCircuit:
         """Adds a gate represented by an instance of Gate class
         :param gate: Gate object
         """
-        self.gates.append(gate)
+        if isinstance(gate, X) and "X" not in self.hardware.basis_gates:
+            self.add(Z(gate.qubit_index, 90))
+            self.add(Y(gate.qubit_index, gate.theta))
+            self.add(Z(gate.qubit_index, -90))
+        elif isinstance(gate, Y) and "Y" not in self.hardware.basis_gates:
+            self.add(Z(gate.qubit_index, -90))
+            self.add(X(gate.qubit_index, gate.theta))
+            self.add(Z(gate.qubit_index, 90))
+        else:
+            self.gates.append(gate)
 
     def add_from_string(self, gates_in_string):
         """Adds gates from the string
@@ -67,6 +77,9 @@ class QuantumCircuit:
         if self.hardware.qubit_number == 1 and len(self.gates) > 3:
             self.gates = optimize_one_qubit_circuit(self.gates, self.hardware)
 
+        if self.hardware.qubit_number == 1 and len(self.gates) <= 3:
+            self.gates = micro_optimize_one_qubit_circuit(self.gates)
+
     def get_cx_number(self):
         """Calculates the number of CX gates on the fly"""
         return sum([1 for gate in self.gates if isinstance(gate, CX)] + [0])
@@ -87,7 +100,10 @@ class QuantumCircuit:
         """Uses string representation of the circuit:
             e.g. 'X(1, 90), Z(1, 180), CX(0,1)'
         """
-        return ", ".join([gate.to_sting_notation() for gate in self.gates])
+        if len(self.gates) == 0:
+            return "[]"
+        else:
+            return ", ".join([gate.to_sting_notation() for gate in self.gates])
 
     def __len__(self):
         """Return number of gates in the circuit."""
