@@ -26,7 +26,7 @@ pip install -r requirements.txt
 For development/contribution proposes one can use `pytests` to check the test coverage:
 
 ```bash
-pytest --cov pulser
+pytest --cov optimize_circuit
 ```
 
 Example of a code:
