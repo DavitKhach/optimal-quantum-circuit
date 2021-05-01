@@ -10,10 +10,6 @@ def optimize_one_qubit_circuit(gate_list, hardware):
     :param gate_list: list of Gate objects (X, Y, Z)
     :return: optimized gate_list
     """
-
-    if len(gate_list) == 0:
-        return gate_list
-
     index = gate_list[0].qubit_index
     resulting_unitary = np.identity(2, dtype=complex)
 
@@ -32,9 +28,6 @@ def optimize_one_qubit_circuit(gate_list, hardware):
     theta_rad = np.arccos(np.abs(resulting_unitary[0, 0]))
     phi_rad = np.angle(resulting_unitary[1, 0])
     lam_rad = np.angle(-resulting_unitary[0, 1])
-    print(theta_rad)
-    print(phi_rad)
-    print(lam_rad)
 
     u_one_qubit_gate = OneQubitUnitary(
         index, np.rad2deg(theta_rad), np.rad2deg(phi_rad), np.rad2deg(lam_rad))
@@ -58,7 +51,7 @@ def u_to_optimal_three_gates(u_one_gate, hardware):
         return gates_zxz
 
     if hardware.duration_of_one_qubit_gates(gates_zxz) < \
-            hardware.duration_of_one_qubit_gates(gates_zxz):
+            hardware.duration_of_one_qubit_gates(gates_zyz):
         return gates_zxz
     else:
         return gates_zyz

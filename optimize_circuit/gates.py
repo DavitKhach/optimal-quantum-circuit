@@ -51,8 +51,8 @@ class Y(Gate):
         theta (degrees) and qubit index
         """
         th = np.deg2rad(theta) / 2
-        self.arr = np.array([[cos(th), -1j * sin(th)],
-                             [-1j * sin(th), cos(th)]], dtype=complex)
+        self.arr = np.array([[cos(th), -sin(th)],
+                             [sin(th), cos(th)]], dtype=complex)
         self.qubit_index = qubit_index
         self.theta = theta
 
