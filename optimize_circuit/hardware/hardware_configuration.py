@@ -63,12 +63,12 @@ class HardwareConfiguration:
     @property
     def length_y(self):
         """The length of the Y gate in ns"""
-        return self._length_x
+        return self._length_y
 
     @property
     def length_z(self):
         """The length of the Z gate in ns"""
-        return self._length_x
+        return self._length_z
 
     @property
     def length_cx(self):

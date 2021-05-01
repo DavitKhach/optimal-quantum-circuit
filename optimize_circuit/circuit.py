@@ -63,7 +63,7 @@ class QuantumCircuit:
                 elif gate_str[0] == "Y":
                     self.add(Y(index, theta))
                 elif gate_str[0] == "Z":
-                    self.add(X(index, theta))
+                    self.add(Z(index, theta))
                 else:
                     raise ValueError(
                         "The given string must be in the "

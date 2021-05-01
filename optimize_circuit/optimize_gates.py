@@ -20,13 +20,19 @@ def optimize_one_qubit_circuit(gate_list, hardware):
     for gate in gate_list:
         resulting_unitary = np.matmul(resulting_unitary, gate.arr)
 
-    global_phase = resulting_unitary[0, 0]
+    global_phase = np.angle(resulting_unitary[0, 0])
 
-    resulting_unitary = np.exp(-1j * global_phase) * global_phase
-
-    theta_rad = np.arccos(resulting_unitary[0, 0])
+    resulting_unitary = np.exp(-1j * global_phase) * resulting_unitary
+    if resulting_unitary[0, 0].imag > 1e-5:
+        raise ArithmeticError(
+            "resulting_unitary[0, 0].imag must be 0 "
+            f"at this point, but it is equal to {resulting_unitary[0, 0].imag }")
+    theta_rad = np.arccos(np.abs(resulting_unitary[0, 0]))
     phi_rad = np.angle(resulting_unitary[1, 0])
     lam_rad = np.angle(-resulting_unitary[0, 1])
+    print(theta_rad)
+    print(phi_rad)
+    print(lam_rad)
 
     u_one_qubit_gate = OneQubitUnitary(
         index, np.rad2deg(theta_rad), np.rad2deg(phi_rad), np.rad2deg(lam_rad))
